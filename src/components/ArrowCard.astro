@@ -8,7 +8,7 @@ type Props = {
 const { entry } = Astro.props;
 ---
 
-<a href={`/${entry.collection}/${entry.slug}`} class="relative group flex flex-nowrap py-3 px-4 pr-10 rounded-lg border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out">
+<a href={`/${entry.collection}/${entry.id}`} class="relative group flex flex-nowrap py-3 px-4 pr-10 rounded-lg border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out">
   <div class="flex flex-col flex-1 truncate">
     <div class="font-semibold">
       {entry.data.title}
@@ -16,6 +16,11 @@ const { entry } = Astro.props;
     <div class="text-sm">
       {entry.data.description}
     </div>
+    {"date" in entry.data && entry.data.date && (
+      <div class="text-xs text-black/30 dark:text-white/30 mt-1">
+        {new Date(entry.data.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+      </div>
+    )}
   </div>
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
