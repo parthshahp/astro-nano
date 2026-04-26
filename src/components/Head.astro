@@ -80,6 +80,7 @@ const { title, description, image = "/nano.png" } = Astro.props;
     preloadTheme();
     onScroll();
     animate();
+    setActiveThemeButton();
 
     const backToTop = document.getElementById("back-to-top");
     backToTop?.addEventListener("click", (event) => scrollToTop(event));
@@ -87,22 +88,43 @@ const { title, description, image = "/nano.png" } = Astro.props;
     const backToPrev = document.getElementById("back-to-prev");
     backToPrev?.addEventListener("click", () => window.history.back());
 
+    const themeDropdownButton = document.getElementById("theme-dropdown-button");
+    const themeDropdownMenu = document.getElementById("theme-dropdown-menu");
+
+    themeDropdownButton?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = !themeDropdownMenu.classList.contains("hidden");
+      themeDropdownMenu?.classList.toggle("hidden");
+      themeDropdownButton?.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    document.addEventListener("click", () => {
+      themeDropdownMenu?.classList.add("hidden");
+      themeDropdownButton?.setAttribute("aria-expanded", "false");
+    });
+
     const lightThemeButton = document.getElementById("light-theme-button");
     lightThemeButton?.addEventListener("click", () => {
       localStorage.setItem("theme", "light");
       toggleTheme(false);
+      themeDropdownMenu?.classList.add("hidden");
+      setActiveThemeButton();
     });
 
     const darkThemeButton = document.getElementById("dark-theme-button");
     darkThemeButton?.addEventListener("click", () => {
       localStorage.setItem("theme", "dark");
       toggleTheme(true);
+      themeDropdownMenu?.classList.add("hidden");
+      setActiveThemeButton();
     });
 
     const systemThemeButton = document.getElementById("system-theme-button");
     systemThemeButton?.addEventListener("click", () => {
       localStorage.setItem("theme", "system");
       toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+      themeDropdownMenu?.classList.add("hidden");
+      setActiveThemeButton();
     });
 
     window.matchMedia("(prefers-color-scheme: dark)")
@@ -114,6 +136,18 @@ const { title, description, image = "/nano.png" } = Astro.props;
     );
 
     document.addEventListener("scroll", onScroll);
+  }
+
+  function setActiveThemeButton() {
+    const theme = localStorage.theme || "system";
+
+    const iconLight = document.getElementById("theme-icon-light");
+    const iconDark = document.getElementById("theme-icon-dark");
+    const iconSystem = document.getElementById("theme-icon-system");
+
+    iconLight?.classList.toggle("hidden", theme !== "light");
+    iconDark?.classList.toggle("hidden", theme !== "dark");
+    iconSystem?.classList.toggle("hidden", theme !== "system");
   }
 
   function animate() {
